@@ -1,0 +1,67 @@
+<!--
+MODELO DE CLAUDE.md PARA UM PROJETO QUE USA O FLUXO PEV
+
+Como usar:
+1. Copie este arquivo para a raiz do projeto com o nome CLAUDE.md.
+2. Troque tudo o que está entre {{ }} e apague as partes que não se aplicam.
+3. Mantenha o arquivo ENXUTO: ele é lido em toda mensagem de toda sessão. Detalhe que só importa em algumas tarefas (padrões de tela, convenções longas) vai em `docs/padroes/*.md`, com uma linha aqui dizendo "leia antes de fazer X".
+4. Os postulados abaixo são exemplos de estrutura. Escreva os do seu projeto: poucos, curtos e verificáveis. Postulado que o revisor não consegue conferir no código não serve.
+5. Veja um exemplo real preenchido em `exemplos/senior-manager/CLAUDE.md`.
+-->
+
+# {{Nome do projeto}}
+
+{{Uma ou duas frases: o que o sistema faz, para quem, em que tecnologia.}}
+
+## Postulados fundamentais
+
+Valem para toda tarefa neste repositório. Se uma tarefa exigir violar algum deles, **pare e pergunte antes de implementar**.
+
+### P1. Regra de negócio tem fonte
+
+- Toda regra de negócio vem de uma fonte: {{o sistema legado (`caminho:linha`), } um plano aprovado (`D-NNN`), uma história ou uma resposta do usuário. Regra sem fonte não é inventada: pergunte.
+- Quando uma regra existente muda de propósito, registre a divergência e o motivo.
+{{- O legado fica em `base-legado/` e é somente leitura: nunca altere, compile nem referencie a partir do código novo. Ele diz o que o sistema fazia, não como construir.}}
+
+### P2. {{Interface / padrões visuais}}  *(remova se não houver interface)*
+
+- {{Template ou biblioteca de componentes do projeto, e a regra de não adicionar recursos novos sem pergunta.}}
+- Antes de criar ou mudar {{uma listagem, um formulário…}}, leia `docs/padroes/{{arquivo}}.md`.
+
+### P3. {{Arquitetura}}
+
+- {{Camadas e a responsabilidade de cada uma (ex.: Domain, Application, Data, Web).}}
+- {{Onde fica a regra de negócio e onde ela NÃO pode ficar (controller, tela).}}
+- {{Padrões proibidos (ex.: biblioteca de mapeamento, acesso direto ao banco no controller).}}
+
+### P4. {{Documentação do usuário}}  *(remova se o projeto não tem)*
+
+- Toda mudança que o usuário perceba é documentada em {{ajuda / manual / wiki}} **no mesmo trabalho** que faz a mudança.
+- {{Onde ficam os artigos e o teste que falha se faltar.}}
+
+### P5. Planos em etapas, com validação independente (fluxo PEV)
+
+- Modelo padrão: `opusplan` (`.claude/settings.json`), com Opus no planejamento e Sonnet na implementação.
+- Planos são criados com a skill `pev-planejar` (módulo novo ou evolução) ou `pev-planejar-migracao` (módulo que já existe no legado) e executados com a `pev-executar`, **uma etapa por sessão**: a sessão nova lê o plano e retoma pela primeira etapa não concluída, sem depender do histórico.
+- Nenhuma etapa termina sem a **Validação** do agente `pev-revisor`, e todo plano termina com a Revisão da documentação e a Validação final.
+- Os critérios de aceite de todo plano incluem a lista de `.planning/criterios-base.md`.
+
+## Contexto do produto
+
+- {{Hierarquia do domínio e quem são os usuários (ex.: Empresa → Filial → Usuário).}}
+- {{Dados sensíveis e a regra de isolamento (LGPD, sigilo, multi-cliente).}}
+- {{Regras que nunca podem ser quebradas (ex.: lançamento contábil nunca é apagado, só estornado).}}
+- {{Perfis de usuário e quem pode o quê, em poucas linhas.}}
+
+## Referências
+
+- Projeto e roadmap: `.planning/PROJETO.md`; planos: `.planning/plano/`; histórias: `.planning/historias/`; critérios base: `.planning/criterios-base.md`.
+- {{Padrões do projeto: `docs/padroes/…`; arquitetura de referência; links.}}
+
+## Ambiente
+
+- {{Versão do SDK / runtime.}}
+- Testes: `{{comando de testes}}`.
+- Build: `{{comando de build}}`.
+- Rodar: `{{comando para subir o sistema}}`.
+- Banco local: `{{comando}}`. {{Migrations: como criar e aplicar.}}
